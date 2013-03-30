@@ -1,0 +1,1 @@
+# Sharebox dropbox like app on Ruby on Rails for file storing and sharing.
