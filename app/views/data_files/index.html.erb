@@ -1,0 +1,17 @@
+<% title "Files" %>
+
+<table>
+  <tr>
+    <th>Uploaded files</th>
+  </tr>
+  <% for data_file in @data_files %>
+    <tr>
+      <td><%= link_to data_file.file_name, download_path(data_file) %></td>
+      <td><%= link_to "Show", data_file %></td>
+      <td><%= link_to "Edit", edit_data_file_path(data_file) %></td>
+      <td><%= link_to "Destroy", data_file, :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+</table>
+
+<p><%= link_to "New File", new_data_file_path %></p>

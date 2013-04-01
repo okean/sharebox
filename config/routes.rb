@@ -1,10 +1,13 @@
 Sharebox::Application.routes.draw do
   
+  resources :data_files
+  match "data_files/get/:id" => "data_files#get", :as => "download"
+
   get "home/index"
 
   devise_for :users
 
-  root :to => 'home#index'
+  root :to => "home#index"
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
