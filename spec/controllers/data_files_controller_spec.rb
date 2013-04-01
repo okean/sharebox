@@ -208,13 +208,11 @@ describe DataFilesController do
       
       before(:each) do
         sign_in @user
-        @wrong_user = FactoryGirl.create(:user, email: 'wrong@sharebox.com')
-        @wrong_user_file = FactoryGirl.create(:data_file, user: @wrong_user)
         @file = FactoryGirl.create(:data_file, user: @user)
       end
       
       it "should deny access for an unauthorized user" do
-        delete :destroy, id: @wrong_user_file
+        delete :destroy, id: 2
         response.should redirect_to(data_files_path)
       end
       

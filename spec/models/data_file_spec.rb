@@ -19,4 +19,8 @@ describe DataFile do
   it "should respond to file_name attribute" do
     @data_file.should respond_to(:file_name)
   end
+  
+  it "should respond to file_size attribute" do
+    @data_file.should respond_to(:file_size)
+  end
 end

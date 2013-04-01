@@ -54,13 +54,29 @@ describe "Users" do
     describe "success" do
       it "should sign a user in and out" do
         user = FactoryGirl.create(:user)
-        visit new_user_session_path
-        fill_in :email, with: user.email
-        fill_in :password, with: user.password
-        click_button
+        test_sign_in(user)
         controller.should be_signed_in
         click_link "Sign out"
         controller.should_not be_signed_in
+      end
+    end
+  end
+  
+  describe "Upload files" do
+    
+    before(:each) do
+      user = FactoryGirl.create(:user)
+      test_sign_in(user)
+    end
+    
+    describe "success" do
+      
+      it "should upload a new file" do
+        click_link "Upload"
+        attach_file :data_file_uploaded_file, "#{Rails.root}/spec/fixtures/images/test.jpg", "image/jpeg"
+        click_button
+        #response.should redirect_to()
+        response.should have_selector('div#flash_notice', content: 'Successfully')
       end
     end
   end
