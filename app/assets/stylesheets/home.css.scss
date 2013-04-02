@@ -82,11 +82,13 @@ body {
     padding: 0 20px;  
     margin: 20px auto ;  
     overflow: hidden;  
-}  
+}
+
 #menu ul{  
     padding: 0;  
     margin: 0;  
-}  
+}
+
 #menu ul li {  
     list-style: none;  
     float: left;  
@@ -94,7 +96,8 @@ body {
     margin-right: 10px;  
   
   
-}  
+}
+
 #menu ul li a, #menu ul li a:visited{  
     display: block;  
     padding: 0 15px;  
@@ -103,8 +106,37 @@ body {
     color: #45759F;  
     background: #EFF8FF;  
     border: 1px solid #CFEBFF;  
-}  
+}
+
 #menu ul li a:hover, #menu ul li a:active{  
     background: #DFF1FF;  
     border: 1px solid #AFDDFF;  
-} 
+}
+
+.folder  {  
+    background: url("../images/folder.png") no-repeat scroll left center transparent;  
+}  
+  
+.file {  
+    background: url("../images/file.png") no-repeat scroll left center transparent;  
+}
+
+.folder.asset_details:hover, .shared_folder.asset_details:hover, .file.asset_details:hover  {  
+    border: 1px solid #DFDFDF;  
+}
+
+.folder.asset_details:hover  {  
+    background: url("../images/folder.png") no-repeat scroll left center #EFEFEF;  
+}
+
+.shared_folder  {  
+    background: url("../images/shared_folder.png") no-repeat scroll left center transparent;  
+}
+
+.shared_folder.asset_details:hover  {  
+    background: url("../images/shared_folder.png") no-repeat scroll left center #EFEFEF;  
+}
+
+.file.asset_details:hover  {  
+    background: url("../images/file.png") no-repeat scroll left center #EFEFEF;  
+}

@@ -72,11 +72,48 @@ describe "Users" do
     describe "success" do
       
       it "should upload a new file" do
-        click_link "Upload"
-        attach_file :data_file_uploaded_file, "#{Rails.root}/spec/fixtures/images/test.jpg", "image/jpeg"
-        click_button
-        #response.should redirect_to()
-        response.should have_selector('div#flash_notice', content: 'Successfully')
+        pending "Decide on redirection"
+        lambda do
+          click_link "Upload"
+          attach_file :data_file_uploaded_file, "#{Rails.root}/spec/fixtures/images/test.jpg", "image/jpeg"
+          click_button
+          #response.should redirect_to()
+          response.should have_selector('div#flash_notice', content: 'Successfully')
+        end.should change(DataFile, :count).by(1)
+      end
+    end
+  end
+  
+  describe "Create folders" do
+    
+    before(:each) do
+      user = FactoryGirl.create(:user)
+      test_sign_in(user)
+    end
+    
+    describe "failure" do
+      
+      it "should not create a new folder" do
+        lambda do
+          click_link "New Folder"
+          click_button
+          response.should render_template('folders/new')
+          response.should have_selector('div.error_messages h2', content: 'Invalid Fields')
+        end.should_not change(Folder, :count)
+      end
+    end
+    
+    describe "success" do
+      
+      it "should create a new folder" do
+        pending "Decide on redirection"
+        lambda do
+          click_link "New Folder"
+          fill_in :name, with: "test_folder"
+          click_button
+          #response.should redirect_to()
+          response.should have_selector('div#flash_notice', content: 'Successfully')
+        end.should change(Folder, :count).by(1)
       end
     end
   end
