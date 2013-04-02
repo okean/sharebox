@@ -53,7 +53,7 @@ class DataFilesController < ApplicationController
       @data_file.destroy
       redirect_to data_files_url, :notice => "Successfully destroyed data file."
     else
-      redirect_to data_files_path
+      redirect_to root_path
     end
   end
 end

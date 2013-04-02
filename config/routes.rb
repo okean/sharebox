@@ -1,5 +1,7 @@
 Sharebox::Application.routes.draw do
   
+  resources :folders
+
   resources :data_files
   match "data_files/get/:id" => "data_files#get", :as => "download"
 

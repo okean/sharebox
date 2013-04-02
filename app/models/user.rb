@@ -10,4 +10,5 @@ class User < ActiveRecord::Base
   # attr_accessible :title, :body
   
   has_many :data_files, dependent: :destroy
+  has_many :folders, dependent: :destroy
 end

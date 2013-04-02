@@ -11,6 +11,11 @@ FactoryGirl.define do
     uploaded_file { fixture_file_upload("#{Rails.root}/spec/fixtures/images/test.jpg", 'image/jpg') }
   end
   
+  factory :folder do
+    user 
+    name "test_folder"
+  end
+  
   sequence :file_name do |n|
     fixture_file_upload("#{Rails.root}/spec/fixtures/images/test#{n}.jpg", 'image/jpg')
   end

@@ -6,16 +6,18 @@ describe DataFilesController do
   before(:each) do
     @user = FactoryGirl.create(:user)
   end
+  
+  describe "access control" do
+    
+    it_should_behave_like "autheticated user"
+    
+    it "should deny access to 'get'" do
+      get :get, id: 1
+      response.should redirect_to(new_user_session_path)
+    end
+  end
 
   describe "GET 'index'" do
-
-    context "when not signed in" do
-      
-      it "should redirect to new session template" do
-        get :index
-        response.should redirect_to('/users/sign_in')
-      end
-    end
     
     context "when signed in" do
       
@@ -24,7 +26,7 @@ describe DataFilesController do
         @file = FactoryGirl.create(:data_file, user: @user)
       end
       
-      it "should render index template" do
+      it "should render 'index' template" do
         get :index
         response.should render_template('data_files/index')
       end
@@ -38,13 +40,6 @@ describe DataFilesController do
   end
   
   describe "GET 'show'" do
-    context "when not signed in" do
-      
-      it "should redirect to new session template" do
-        get :show, id: 1
-        response.should redirect_to('/users/sign_in')
-      end
-    end
     
     context "when signed in" do
       
@@ -61,13 +56,6 @@ describe DataFilesController do
   end
 
   describe "GET 'new'" do
-    context "when not signed in" do
-      
-      it "should redirect to new session template" do
-        get :new
-        response.should redirect_to('/users/sign_in')
-      end
-    end
     
     context "when signed in" do
       
@@ -75,7 +63,7 @@ describe DataFilesController do
         sign_in @user
       end
       
-      it "should render new template" do
+      it "should render 'new' template" do
         get :new
         response.should render_template('data_files/new')
       end
@@ -83,13 +71,6 @@ describe DataFilesController do
   end
 
   describe "POST 'create'" do
-    context "when not signed in" do
-      
-      it "should redirect to new session template" do
-        post :create
-        response.should redirect_to('/users/sign_in')
-      end
-    end
     
     context "when signed in" do
       
@@ -97,22 +78,26 @@ describe DataFilesController do
         sign_in @user
       end
       
-      describe "invalid data" do
+      describe "failure" do
         
-        it "should render new template" do
-          post :create
+        before(:each) do
+          @attr = { }
+        end
+        
+        it "should render 'new' template" do
+          post :create, data_file: @attr
           response.should have_selector('div.error_messages h2', content: 'Invalid Fields')
           response.should render_template('data_files/new')
         end
         
         it "should not create a file" do
           lambda do
-            post :create
+            post :create, data_file: @attr
           end.should_not change(DataFile, :count)
         end
       end
       
-      describe "valid data" do
+      describe "success" do
         
         before(:each) do
           @attr = { uploaded_file: fixture_file_upload("/images/test.jpg", 'image/jpg') }
@@ -138,13 +123,6 @@ describe DataFilesController do
   end
 
   describe "GET 'edit'" do
-    context "when not signed in" do
-      
-      it "should redirect to new session template" do
-        get :edit, id: 1
-        response.should redirect_to('/users/sign_in')
-      end
-    end
     
     context "when signed in" do
       
@@ -153,21 +131,14 @@ describe DataFilesController do
         @file = FactoryGirl.create(:data_file, user: @user)
       end
       
-      it "should render edit template" do
-        get :edit, id: @file.id
+      it "should render 'edit' template" do
+        get :edit, id: @file
         response.should render_template('data_files/edit')
       end
     end
   end
 
   describe "PUT 'update'" do
-    context "when not signed in" do
-      
-      it "should redirect to new session template" do
-        put :update, id: 1
-        response.should redirect_to('/users/sign_in')
-      end
-    end
     
     context "when signed in" do
       
@@ -196,43 +167,53 @@ describe DataFilesController do
   end
 
   describe "DELETE 'destroy'" do
-    context "when not signed in" do
-      
-      it "should redirect to new session template" do
-        delete :destroy, id: 1
-        response.should redirect_to('/users/sign_in')
-      end
-    end
     
     context "when signed in" do
       
       before(:each) do
         sign_in @user
-        @file = FactoryGirl.create(:data_file, user: @user)
       end
       
-      it "should deny access for an unauthorized user" do
-        delete :destroy, id: 2
-        response.should redirect_to(data_files_path)
+      describe "for an unauthorized user" do
+        
+        it "should not delete a file" do
+          lambda do
+           delete :destroy, id: 2
+          end.should_not change(DataFile, :count)
+        end
+        
+        it "should redirect to root path" do
+          delete :destroy, id: 2
+          response.should redirect_to root_path
+        end
       end
       
-      it "should destroy file for an authorized user" do
-        lambda do
+      describe "for an authorized user" do
+        
+        before(:each) do
+          @file = FactoryGirl.create(:data_file, user: @user)
+        end
+        
+        it "should delete folder" do
+          lambda do
+            delete :destroy, id: @file
+          end.should change(DataFile, :count).by(-1)
+        end
+        
+        it "should redirect to folders path" do
           delete :destroy, id: @file
-        end.should change(DataFile, :count).by(-1)
+          response.should redirect_to(data_files_path)
+        end
+        
+        it "should have a flash message" do
+          delete :destroy, id: @file
+          flash[:notice] =~ /Successfully destroyed data file/i
+        end
       end
     end
   end
   
   describe "GET 'download' " do
-    
-    context "when not signed in" do
-      
-      it "should redirect to new session template" do
-        get :get, id: 1
-        response.should redirect_to('/users/sign_in')
-      end
-    end
     
     context "when signed in" do
       

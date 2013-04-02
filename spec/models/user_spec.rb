@@ -26,6 +26,10 @@ describe User do
     @user.should respond_to(:data_files)
   end
   
+  it "should have a folders attrbute" do
+    @user.should respond_to(:folders)
+  end
+  
   describe "DataFiles associations" do
     
     before(:each) do
@@ -35,6 +39,18 @@ describe User do
     it "should destroy related files" do
       @user.destroy
       DataFile.find_by_id(@file).should be_nil
+    end
+  end
+  
+  describe "Folders associations" do
+    
+    before(:each) do
+      @folder = FactoryGirl.create(:folder, user: @user)
+    end
+    
+    it "should destroy related files" do
+      @user.destroy
+      Folder.find_by_id(@folder).should be_nil
     end
   end
 end

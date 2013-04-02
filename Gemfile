@@ -5,6 +5,7 @@ gem 'sqlite3', '1.3.7'
 gem 'jquery-rails', '2.2.1'
 gem 'devise', '2.1.2'
 gem 'paperclip', '3.4.1'
+gem 'acts_as_tree', '1.3.0'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
