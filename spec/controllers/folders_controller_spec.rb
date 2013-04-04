@@ -113,12 +113,12 @@ describe FoldersController do
           end.should change(Folder, :count).by(1)
         end
         
-        it "should redirect to Home page on creating root folders" do
+        it "should redirect to Home page creating root folders" do
           post :create, folder: @attr
           response.should redirect_to root_path
         end
         
-        it "should redirect to parent folder on creating children folder" do
+        it "should redirect to parent folder creating nested folder" do
           post :create, folder: @attr.merge({ parent_id: 1 })
           response.should redirect_to browse_path(1)
         end

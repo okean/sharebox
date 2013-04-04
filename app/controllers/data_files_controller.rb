@@ -23,12 +23,22 @@ class DataFilesController < ApplicationController
 
   def new
     @data_file = current_user.data_files.new
+    if params[:folder_id]
+      @current_folder = current_user.folders.find(params[:folder_id])
+      @data_file.folder_id = @current_folder.id
+    end
   end
 
   def create
     @data_file = current_user.data_files.new(params[:data_file])
     if @data_file.save
-      redirect_to @data_file, :notice => "Successfully created data file."
+      flash[:notice] = "Successfully created data file."
+      
+      if @data_file.folder
+        redirect_to browse_path(@data_file.folder)
+      else
+        redirect_to root_path
+      end
     else
       render :action => 'new'
     end

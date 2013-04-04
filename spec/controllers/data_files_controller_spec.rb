@@ -67,6 +67,17 @@ describe DataFilesController do
         get :new
         response.should render_template('data_files/new')
       end
+      
+      it "should create a file instance" do
+        get :new
+        assigns(:data_file).folder_id.should be_nil
+      end
+      
+      it "should create a nested file instance" do
+        folder = FactoryGirl.create(:folder, user: @user)
+        get :new, folder_id: folder
+        assigns(:data_file).folder_id.should == folder.id
+      end
     end
   end
 
@@ -109,9 +120,15 @@ describe DataFilesController do
           end.should change(DataFile, :count)
         end
         
-        it "should redirect to file page" do
+        it "should redirect to Home page creating non-nested files" do
           post :create, data_file: @attr
-          response.should redirect_to data_file_url(assigns[:data_file])
+          response.should redirect_to root_path
+        end
+        
+        it "should redirect to parent folder creating nested files" do
+          folder = FactoryGirl.create(:folder, user: @user)
+          post :create, data_file: @attr.merge({ folder_id: folder.id })
+          response.should redirect_to browse_path(folder)
         end
         
         it "should have a success message" do

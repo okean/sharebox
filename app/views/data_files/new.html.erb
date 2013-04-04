@@ -1,5 +1,11 @@
 <% title "Upload a file" %>
 
+<%= render 'shared/breadcrumbs' %>
+
 <%= render 'form' %>
 
-<p><%= link_to "Back to List", root_url %></p>
+<% if @data_file.folder %>
+  <p><%= link_to "Back to #{@data_file.folder.name} folder", browse_path(@data_file.folder) %></p>
+<% else %>
+  <p><%= link_to "Back to Home page", root_path %></p>
+<% end %>

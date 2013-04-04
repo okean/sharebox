@@ -7,8 +7,10 @@
       <li><%= link_to "Upload", new_data_file_path %></li>
       <% if @current_folder %>
         <li><%= link_to "New Folder", new_sub_folder_path(@current_folder) %></li>
+        <li><%= link_to "New File", new_sub_file_path(@current_folder) %></li>
       <% else %>
         <li><%= link_to "New Folder", new_folder_path %></li>
+        <li><%= link_to "New File", new_data_file_path %></li>
       <% end %>
     </ul>
   </div>

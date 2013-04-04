@@ -71,15 +71,23 @@ describe "Users" do
     
     describe "success" do
       
-      it "should upload a new file on Home page" do
+      it "should upload a new file and display it on Home page" do
         lambda do
-          click_link "Upload"
-          attach_file :data_file_uploaded_file, "#{Rails.root}/spec/fixtures/images/test.jpg", "image/jpeg"
-          click_button
+          upload_file
           response.should render_template('home/index')
           response.should have_selector('div#flash_notice', content: 'Successfully')
         end.should change(DataFile, :count).by(1)
       end
+      
+       it "should upload a new file in a nested folder" do
+        lambda do
+          create_folder
+          click_link "test_folder"
+          upload_file
+          response.should render_template('home/index')
+          response.should have_selector('div#flash_notice', content: 'Successfully')
+        end.should change(DataFile, :count).by(1)
+       end
     end
   end
   
