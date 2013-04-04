@@ -1,5 +1,11 @@
 <% title "New Folder" %>
 
+<%= render 'shared/breadcrumbs' %>
+
 <%= render 'form' %>
 
-<p><%= link_to "Back to List", folders_path %></p>
+<% if @folder.parent %>
+ <p><%= link_to "Back to #{@folder.parent.name} folder", browse_path(@folder.parent) %></p>
+<% else %>
+  <p><%= link_to "Back to Home Page", root_path %></p>
+<%end%>

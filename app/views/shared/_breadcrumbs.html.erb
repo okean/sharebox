@@ -1,0 +1,12 @@
+<div class="breadcrumbs">
+  <% if @current_folder %>
+    <%= link_to "ShareBox", root_path %>
+    
+    <% @current_folder.ancestors.reverse.each do |folder| %>
+      &raquo <%= link_to folder.name, browse_path(folder) %>  
+    <% end %>
+    &raquo <%= @current_folder.name %>
+  <% else %>
+    ShareBox
+  <% end %>
+</div>

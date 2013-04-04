@@ -1,11 +1,13 @@
 Sharebox::Application.routes.draw do
   
   resources :folders
+  match "browse/:folder_id/new_folder" => "folders#new", :as => "new_sub_folder"
 
   resources :data_files
-  match "data_files/get/:id" => "data_files#get", :as => "download"
+  match "data_files/get/:id" => "data_files#get", :as => "download" 
 
   get "home/index"
+  match "browse/:folder_id" => "home#browse", :as => "browse"
 
   devise_for :users
 

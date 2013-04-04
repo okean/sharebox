@@ -20,6 +20,27 @@ describe Folder do
     @user.folders.new(@attr.merge(name: long_name)).should_not be_valid
   end
   
+  it "should have a user atribute" do
+    @user.folders.new(@attr).should respond_to(:user)
+  end
+  
+  it "should have a data_files attribute" do
+    @user.folders.new(@attr).should respond_to(:data_files)
+  end
+  
+  describe "DataFiles associations" do
+    
+    before(:each) do
+      @folder = FactoryGirl.create(:folder, user: @user)
+      @file = FactoryGirl.create(:data_file, user: @user, folder_id: @folder.id)
+    end
+    
+    it "should destroy related files" do
+      @folder.destroy
+      DataFile.find_by_id(@file).should be_nil
+    end
+  end
+  
   describe "parent and children associations" do
     
     before(:each) do

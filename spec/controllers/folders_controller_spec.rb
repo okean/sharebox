@@ -28,7 +28,7 @@ describe FoldersController do
       
       it "should display user's folders" do
         get :index
-        response.should have_selector('td', content: 'test_folder')
+        response.should have_selector('td', content: @folder.name)
       end
     end
   end
@@ -60,6 +60,17 @@ describe FoldersController do
       it "should render 'new' template" do
         get :new
         response.should render_template('folders/new')
+      end
+      
+      it "should create an instance for a root folder" do
+        get :new
+        assigns(:folder).parent_id.should be_nil
+      end
+      
+      it "should create an instance for a children folder" do
+        folder = FactoryGirl.create(:folder, user: @user)
+        get :new, folder_id: folder
+        assigns(:folder).parent_id.should == folder.id
       end
     end
   end
@@ -102,9 +113,14 @@ describe FoldersController do
           end.should change(Folder, :count).by(1)
         end
         
-        it "should redirect to folder page" do
+        it "should redirect to Home page on creating root folders" do
           post :create, folder: @attr
-          response.should redirect_to folder_url(assigns[:folder])
+          response.should redirect_to root_path
+        end
+        
+        it "should redirect to parent folder on creating children folder" do
+          post :create, folder: @attr.merge({ parent_id: 1 })
+          response.should redirect_to browse_path(1)
         end
         
         it "should have a flash message" do

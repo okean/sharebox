@@ -9,11 +9,13 @@ FactoryGirl.define do
   factory :data_file do
     user
     uploaded_file { fixture_file_upload("#{Rails.root}/spec/fixtures/images/test.jpg", 'image/jpg') }
+    folder_id nil
   end
   
   factory :folder do
     user 
     name "test_folder"
+    parent_id nil
   end
   
   sequence :file_name do |n|

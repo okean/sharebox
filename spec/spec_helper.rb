@@ -121,3 +121,9 @@ def test_sign_in(user)
   fill_in :password, with: user.password
   click_button
 end
+
+def create_folder(name = "test_folder")
+  click_link "New Folder"
+  fill_in :name, with: name
+  click_button
+end

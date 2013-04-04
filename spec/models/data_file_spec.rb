@@ -16,6 +16,10 @@ describe DataFile do
     @data_file.should respond_to(:user)
   end
   
+  it "should respond to folder attribute" do
+    @data_file.should respond_to(:folder)
+  end
+  
   it "should respond to file_name attribute" do
     @data_file.should respond_to(:file_name)
   end

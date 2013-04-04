@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130401155958) do
+ActiveRecord::Schema.define(:version => 20130403174954) do
 
   create_table "data_files", :force => true do |t|
     t.integer  "user_id"
@@ -21,8 +21,10 @@ ActiveRecord::Schema.define(:version => 20130401155958) do
     t.string   "uploaded_file_content_type"
     t.integer  "uploaded_file_file_size"
     t.datetime "uploaded_file_updated_at"
+    t.integer  "folder_id"
   end
 
+  add_index "data_files", ["folder_id"], :name => "index_data_files_on_folder_id"
   add_index "data_files", ["user_id"], :name => "index_data_files_on_user_id"
 
   create_table "folders", :force => true do |t|
