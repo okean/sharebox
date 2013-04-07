@@ -1,8 +1,11 @@
-<% title "Edit Folder" %>
+<% title "Rename Folder" %>
+
+<%= render 'shared/breadcrumbs' %>
 
 <%= render 'form' %>
 
-<p>
-  <%= link_to "Show", @folder %> |
-  <%= link_to "View All", folders_path %>
-</p>
+<% if @folder.parent %>
+  <%= link_to "Back to #{@folder.parent.name} folder", browse_path(@folder.parent) %>
+<% else %>
+  <%= link_to "Back to Home page", root_path %>
+<% end %>

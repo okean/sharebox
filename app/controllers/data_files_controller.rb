@@ -59,9 +59,17 @@ class DataFilesController < ApplicationController
 
   def destroy
     @data_file = current_user.data_files.find_by_id(params[:id])
+
     if @data_file
+      current_folder = @data_file.folder
       @data_file.destroy
-      redirect_to data_files_url, :notice => "Successfully destroyed data file."
+      flash[:notice] = "Successfully deleted file."
+      
+      if current_folder
+        redirect_to browse_path(current_folder)
+      else
+        redirect_to root_path
+      end
     else
       redirect_to root_path
     end

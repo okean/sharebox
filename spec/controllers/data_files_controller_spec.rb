@@ -120,12 +120,12 @@ describe DataFilesController do
           end.should change(DataFile, :count)
         end
         
-        it "should redirect to Home page creating non-nested files" do
+        it "should redirect to home page if there is no parent folder" do
           post :create, data_file: @attr
           response.should redirect_to root_path
         end
         
-        it "should redirect to parent folder creating nested files" do
+        it "should redirect to parent folder" do
           folder = FactoryGirl.create(:folder, user: @user)
           post :create, data_file: @attr.merge({ folder_id: folder.id })
           response.should redirect_to browse_path(folder)
@@ -217,14 +217,22 @@ describe DataFilesController do
           end.should change(DataFile, :count).by(-1)
         end
         
-        it "should redirect to folders path" do
+        it "should redirect to home page if there is no parent folder" do
           delete :destroy, id: @file
-          response.should redirect_to(data_files_path)
+          response.should redirect_to root_path
+        end
+        
+        it "should redirect to parent folder" do
+          folder = FactoryGirl.create(:folder, user: @user)
+          @file.folder_id = folder.id
+          @file.save
+          delete :destroy, id: @file
+          response.should redirect_to browse_path(folder)
         end
         
         it "should have a flash message" do
           delete :destroy, id: @file
-          flash[:notice] =~ /Successfully destroyed data file/i
+          flash[:notice] =~ /Successfully deleted file/i
         end
       end
     end

@@ -23,17 +23,37 @@
   <div class="asset_list">
     <% @folders.each do |folder| %>
       <div class="asset_details folder">  
-          <div class="file_name"><%= link_to folder.name, browse_path(folder) %></div>  
-          <div class="file_size">-</div>  
-          <div class="file_last_updated">-</div>  
+        <div class="file_name"><%= link_to folder.name, browse_path(folder) %></div>  
+        <div class="file_size">-</div>  
+        <div class="file_last_updated">-</div>
+        <div class="actions">
+          <div class="share">
+            <%= link_to "Share" %>
+          </div>
+          <div class="rename">
+            <%= link_to "Rename", edit_folder_path(folder) %>
+          </div>
+          <div class="delete">
+            <%= link_to "Delete", folder, confirm: "Are you sure to delete the \
+                  folder and all of its contents?", method: :delete %>
+          </div>
+        </div>
       </div> 
     <% end %>
     <% @data_files.each do |file| %>
       <div class="asset_details file">  
-          <div class="file_name"><%= link_to file.file_name, download_path(file) %></div>  
-          <div class="file_size"><%= number_to_human_size(file.file_size, precision: 2) %></div>  
-          <div class="file_last_updated"><%= file.uploaded_file_updated_at %></div>  
-      </div> 
+        <div class="file_name"><%= link_to file.file_name, download_path(file) %></div>  
+        <div class="file_size"><%= number_to_human_size(file.file_size, precision: 2) %></div>  
+        <div class="file_last_updated"><%= file.uploaded_file_updated_at %></div>
+        <div class="actions">
+          <div class="download">
+            <%= link_to "Download", download_path(file) %>
+          </div>
+          <div class="delete">
+            <%= link_to "Delete", file, confirm: "Are you sure?", method: :delete %>
+          </div>
+        </div>
+      </div>
     <% end %>
   </div>
 <% end %>

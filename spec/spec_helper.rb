@@ -128,9 +128,9 @@ def create_folder(name = "test_folder")
   click_button
 end
 
-FILE_PATH = "#{Rails.root}/spec/fixtures/images/test.jpg"
+DATA_FILE_PATH = "#{Rails.root}/spec/fixtures/images/test.jpg"
 
-def upload_file(path = FILE_PATH, content_type = "image/jpeg")
+def upload_file(path = DATA_FILE_PATH, content_type = "image/jpeg")
   click_link "Upload"
   attach_file :data_file_uploaded_file, path, content_type
   click_button

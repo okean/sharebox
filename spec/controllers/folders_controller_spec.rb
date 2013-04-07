@@ -113,19 +113,19 @@ describe FoldersController do
           end.should change(Folder, :count).by(1)
         end
         
-        it "should redirect to Home page creating root folders" do
+        it "should redirect to Home page if no parent folder" do
           post :create, folder: @attr
           response.should redirect_to root_path
         end
         
-        it "should redirect to parent folder creating nested folder" do
+        it "should redirect to parent folder" do
           post :create, folder: @attr.merge({ parent_id: 1 })
           response.should redirect_to browse_path(1)
         end
         
         it "should have a flash message" do
           post :create, folder: @attr
-          flash[:notice] =~ /Successfully created folder/i
+          flash[:notice] =~ /Successfully/i
         end
       end
     end
@@ -180,14 +180,20 @@ describe FoldersController do
           @folder.name.should == @attr[:name]
         end
         
-        it "should redirect to folder page" do
+        it "should redirect to Home page if no parent folder" do
           put :update, id: @folder, folder: @attr
-          response.should redirect_to(folder_url(assigns[:folder]))
+          response.should redirect_to root_path
+        end
+        
+        it "should redirect to parent folder" do
+          parent_folder = FactoryGirl.create(:folder, user: @user)
+          put :update, id: @folder, folder: @attr.merge({ parent_id: parent_folder })
+          response.should redirect_to browse_path(parent_folder)
         end
         
         it "should have a flash message" do
           put :update, id: @folder, folder: @attr
-          flash[:notice].should =~ /uccessfully updated folder/i
+          flash[:notice].should =~ /Successfully/i
         end
       end
     end
@@ -227,14 +233,22 @@ describe FoldersController do
           end.should change(Folder, :count).by(-1)
         end
         
-        it "should redirect to folders path" do
+        it "should redirect to home page if there is no parent folder" do
           delete :destroy, id: @folder
-          response.should redirect_to(folders_path)
+          response.should redirect_to root_path
+        end
+        
+        it "should redirect to parent folder" do
+          parent_folder = FactoryGirl.create(:folder, user: @user)
+          @folder.parent_id = parent_folder.id
+          @folder.save
+          delete :destroy, id: @folder
+          response.should redirect_to browse_path(parent_folder)
         end
         
         it "should have a flash message" do
           delete :destroy, id: @folder
-          flash[:notice] =~ /Successfully destroyed folder/i
+          flash[:notice] =~ /Successfully/i
         end
       end
     end
