@@ -18,6 +18,13 @@ FactoryGirl.define do
     parent_id nil
   end
   
+  factory :shared, class: SharedFolder do
+    user
+    folder_id 1
+    shared_email "shared@sharebox.com"
+    message "test_message"
+  end
+  
   sequence :file_name do |n|
     fixture_file_upload("#{Rails.root}/spec/fixtures/images/test#{n}.jpg", 'image/jpg')
   end

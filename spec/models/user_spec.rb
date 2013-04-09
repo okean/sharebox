@@ -30,6 +30,14 @@ describe User do
     @user.should respond_to(:folders)
   end
   
+  it "should have a shared_folders attribute" do
+    @user.should respond_to(:shared_folders)
+  end
+  
+  it "should have a being_shared_folders attribute" do
+    @user.should respond_to(:shared_folders)
+  end
+  
   describe "DataFiles associations" do
     
     before(:each) do
@@ -51,6 +59,23 @@ describe User do
     it "should destroy related files" do
       @user.destroy
       Folder.find_by_id(@folder).should be_nil
+    end
+  end
+  
+  describe "Shared folders associations" do
+    before(:each) do
+      @being_shared = FactoryGirl.create(:user, email: "being_shared@test.com")
+      @shared_folder = FactoryGirl.create(:shared, user: @user, shared_email: @being_shared.email)
+    end
+    
+    it "should destroy related shared folders" do
+      @user.destroy
+      SharedFolder.find_by_id(@shared_folder).should be_nil
+    end
+    
+    it "should destroy related shared folders if shared user destroyed" do
+      @being_shared.destroy
+      SharedFolder.find_by_id(@shared_folder).should be_nil
     end
   end
 end

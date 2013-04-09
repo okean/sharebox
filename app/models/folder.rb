@@ -5,6 +5,7 @@ class Folder < ActiveRecord::Base
   
   belongs_to :user
   has_many :data_files, dependent: :destroy
+  has_many :shared_folders, dependent: :destroy
   
   validates :name, presence: true,
                    length: { maximum: 40 }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130403174954) do
+ActiveRecord::Schema.define(:version => 20130408184909) do
 
   create_table "data_files", :force => true do |t|
     t.integer  "user_id"
@@ -37,6 +37,20 @@ ActiveRecord::Schema.define(:version => 20130403174954) do
 
   add_index "folders", ["parent_id"], :name => "index_folders_on_parent_id"
   add_index "folders", ["user_id"], :name => "index_folders_on_user_id"
+
+  create_table "shared_folders", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "shared_email"
+    t.integer  "shared_user_id"
+    t.integer  "folder_id"
+    t.string   "message"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "shared_folders", ["folder_id"], :name => "index_shared_folders_on_folder_id"
+  add_index "shared_folders", ["shared_user_id"], :name => "index_shared_folders_on_shared_user_id"
+  add_index "shared_folders", ["user_id"], :name => "index_shared_folders_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false

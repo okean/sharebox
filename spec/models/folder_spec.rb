@@ -41,6 +41,19 @@ describe Folder do
     end
   end
   
+  describe "Shared folders associations" do
+    
+    before(:each) do
+      @folder = FactoryGirl.create(:folder, user: @user)
+      @shared_folder = FactoryGirl.create(:shared, user: @user, folder: @folder)
+    end
+    
+    it "should destroy related files" do
+      @folder.destroy
+      SharedFolder.find_by_id(@shared_folder).should be_nil
+    end
+  end
+  
   describe "parent and children associations" do
     
     before(:each) do
