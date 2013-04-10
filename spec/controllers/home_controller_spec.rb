@@ -80,12 +80,13 @@ describe HomeController do
       
       before(:each) do
         @user = FactoryGirl.create(:user)
+        @folder = FactoryGirl.create(:folder, user: @user)
         sign_in @user
       end
       
       it "should share a folder" do
         lambda do
-          xhr :post, :share, email_addresses: "shared@sharebox.com", folder_id: 1
+          xhr :post, :share, email_addresses: "shared@sharebox.com", folder_id: @folder
           response.should be_success
         end.should change(SharedFolder, :count).by(1)
       end

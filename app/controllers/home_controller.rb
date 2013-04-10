@@ -32,6 +32,8 @@ class HomeController < ApplicationController
       @shared_folder.shared_email = email_address
       @shared_folder.message = params[:message]
       @shared_folder.save
+      
+      UserMailer.invitation_to_share(@shared_folder).deliver
     end
     
     respond_to do |format|
