@@ -1,0 +1,12 @@
+<div id="invitation_form" title="Invite others to share" style="display:none">  
+    <%= form_tag '/home/share' do -%>  
+      <%= label_tag 'email_addresses', "Enter recipient email addresses here" %>
+      <br />
+      <%= text_field_tag 'email_addresses', "", class: 'text ui-widget-content ui-corner-all'%>  
+      <br /><br />
+      <%= label_tag 'message', "Optional message" %>
+      <br />  
+      <%= text_area_tag 'message', "",  class: 'text ui-widget-content ui-corner-all'%>  
+      <%= hidden_field_tag "folder_id" %>  
+    <% end -%>                  
+</div> 

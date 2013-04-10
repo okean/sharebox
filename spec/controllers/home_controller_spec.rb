@@ -9,6 +9,11 @@ describe HomeController do
       get :browse, folder_id: 1
       response.should redirect_to(new_user_session_path)
     end
+    
+    it "should deny access to 'share'" do
+      post :share
+      response.should redirect_to(new_user_session_path)
+    end
   end
 
   describe "GET 'index'" do
@@ -65,6 +70,24 @@ describe HomeController do
                   uploaded_file: FactoryGirl.generate(:file_name), folder_id: folder1.id)
         get :index
         assigns(:data_files).should == [file1]
+      end
+    end
+  end
+  
+  describe "POST 'share'" do
+    
+    context "when signed in" do
+      
+      before(:each) do
+        @user = FactoryGirl.create(:user)
+        sign_in @user
+      end
+      
+      it "should share a folder" do
+        lambda do
+          xhr :post, :share, email_addresses: "shared@sharebox.com", folder_id: 1
+          response.should be_success
+        end.should change(SharedFolder, :count).by(1)
       end
     end
   end

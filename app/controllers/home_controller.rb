@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-  before_filter :authenticate_user!, only: [:browse]
+  before_filter :authenticate_user!, only: [:browse, :share]
   
   def index
     if user_signed_in?
@@ -20,6 +20,22 @@ class HomeController < ApplicationController
     else
       flash[:error] = "Don't be cheeky! Mind your own folders!"
       redirect_to root_url
+    end
+  end
+  
+  def share
+    email_addresses = params[:email_addresses].split(',')
+    
+    email_addresses.each do |email_address|
+      @shared_folder = current_user.shared_folders.new
+      @shared_folder.folder_id = params[:folder_id]
+      @shared_folder.shared_email = email_address
+      @shared_folder.message = params[:message]
+      @shared_folder.save
+    end
+    
+    respond_to do |format|
+      format.js {}
     end
   end
 end

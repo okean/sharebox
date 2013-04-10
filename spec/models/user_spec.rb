@@ -63,6 +63,7 @@ describe User do
   end
   
   describe "Shared folders associations" do
+    
     before(:each) do
       @being_shared = FactoryGirl.create(:user, email: "being_shared@test.com")
       @shared_folder = FactoryGirl.create(:shared, user: @user, shared_email: @being_shared.email)
@@ -76,6 +77,25 @@ describe User do
     it "should destroy related shared folders if shared user destroyed" do
       @being_shared.destroy
       SharedFolder.find_by_id(@shared_folder).should be_nil
+    end
+  end
+  
+  describe "Sync new user with shared folders" do
+    
+    before(:each) do
+      @folder = FactoryGirl.create(:folder, user: @user)
+      @shared_folder = FactoryGirl.create(:shared, user: @user,
+                                          shared_email: 'being_shared@test.com', folder: @folder)
+    end
+    
+    it "should assign shared folder to newly created user" do
+      shared_user = FactoryGirl.create(:user, email: 'being_shared@test.com')
+      shared_user.being_shared_folders.should include(@shared_folder)
+    end
+    
+    it "should not assign folder to a not being shared user" do
+      shared_user = FactoryGirl.create(:user, email: 'not_being_shared@test.com')
+      shared_user.being_shared_folders.should_not include(@shared_folder)
     end
   end
 end

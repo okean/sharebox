@@ -28,6 +28,26 @@ describe Folder do
     @user.folders.new(@attr).should respond_to(:data_files)
   end
   
+  it "should have shared? method" do
+    @user.folders.new(@attr).should respond_to(:shared?)
+  end
+  
+  describe "shared? method" do
+    
+    before(:each) do
+      @folder = FactoryGirl.create(:folder, user: @user)
+    end
+    
+    it "should return false for not shared folders" do
+      @folder.shared?.should be_false
+    end
+    
+    it "should return true for shared folders" do
+      shared_folder = FactoryGirl.create(:shared, user: @user, folder: @folder)
+      @folder.shared?.should be_true
+    end
+  end
+  
   describe "DataFiles associations" do
     
     before(:each) do

@@ -22,13 +22,13 @@
   </div>
   <div class="asset_list">
     <% @folders.each do |folder| %>
-      <div class="asset_details folder">  
+      <div class="asset_details <%= folder.shared? ? 'shared_folder' : 'folder' %>" id="folder_<%= folder.id %>">   
         <div class="file_name"><%= link_to folder.name, browse_path(folder) %></div>  
         <div class="file_size">-</div>  
         <div class="file_last_updated">-</div>
         <div class="actions">
           <div class="share">
-            <%= link_to "Share" %>
+            <%= link_to "Share", "#", folder_id: folder.id, folder_name: folder.name %>
           </div>
           <div class="rename">
             <%= link_to "Rename", edit_folder_path(folder) %>
@@ -57,3 +57,5 @@
     <% end %>
   </div>
 <% end %>
+
+<%= render 'invitation_form' %> 

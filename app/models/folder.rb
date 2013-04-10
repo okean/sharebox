@@ -9,4 +9,8 @@ class Folder < ActiveRecord::Base
   
   validates :name, presence: true,
                    length: { maximum: 40 }
+  
+  def shared?
+    !self.shared_folders.empty?
+  end
 end

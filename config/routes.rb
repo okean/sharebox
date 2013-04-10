@@ -9,6 +9,7 @@ Sharebox::Application.routes.draw do
 
   get "home/index"
   match "browse/:folder_id" => "home#browse", :as => "browse"
+  match "home/share" => "home#share"
 
   devise_for :users
 
