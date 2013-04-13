@@ -7,13 +7,23 @@ class HomeController < ApplicationController
                                             order('uploaded_file_file_name')
       
       @folders = current_user.folders.roots.order('name')
+      
+      @being_shared_folders = current_user.shared_folders_by_others
     end
   end
   
   def browse
     @current_folder = current_user.folders.find_by_id(params[:folder_id])
+    @is_this_folder_being_shared = false if @current_folder
+    
+    if @current_folder.nil?
+      folder = Folder.find_by_id(params[:folder_id])
+      @current_folder ||= folder if current_user.has_share_access?(folder)
+      @is_this_folder_being_shared = true if @current_folder
+    end
     
     if @current_folder
+      @being_shared_folders = []
       @folders = @current_folder.children
       @data_files = @current_folder.data_files.order('uploaded_file_file_name')
       render action: "index"

@@ -3,13 +3,19 @@ class DataFilesController < ApplicationController
   
   def get
     data_file = current_user.data_files.find_by_id(params[:id])
+    
+    if data_file.nil?
+      tmp_file = DataFile.find_by_id(params[:id])
+      data_file = tmp_file if tmp_file && current_user.has_share_access?(tmp_file.folder)
+    end
+    
     if data_file
       send_file data_file.uploaded_file.path,
                 type: data_file.uploaded_file_content_type,
                 x_sendfile: true
     else
       flash[:error] = "Don't be cheeky! Mind your own files"
-      redirect_to data_files_path
+      redirect_to root_path
     end
   end
   

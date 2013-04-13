@@ -244,29 +244,49 @@ describe DataFilesController do
       
       before(:each) do
         sign_in @user
-        @file = FactoryGirl.create(:data_file, user: @user)
       end
      
       describe "for an unauthorized user" do
-        
-        it "should redirect to data_files path" do
-          get :get, id: 2
-          response.should redirect_to(data_files_path)
+
+        before(:each) do
+          another_user = FactoryGirl.create(:user, email: "another@sharebox.com")
+          @file = FactoryGirl.create(:data_file, user: another_user)
+        end
+      
+        it "should redirect to root path" do
+          get :get, id: @file
+          response.should redirect_to(root_path)
         end
         
         it "should have a flash message" do
-          get :get, id: 2
+          get :get, id: @file
           flash[:error].should =~ /Don't be cheeky! Mind your own files/i
         end
       end
       
       describe "for an authorized user" do
         
+        before(:each) do
+          @file = FactoryGirl.create(:data_file, user: @user)
+        end
+        
         it "should return user's file" do
           @controller.should_receive(:send_file).with(@file.uploaded_file.path,
                                     { type: @file.uploaded_file_content_type,
                                     x_sendfile: true }).and_return { @controller.render nothing: true }
           get :get, id: @file
+        end
+        
+        it "should return user's file frm a shared folder" do
+          another_user = FactoryGirl.create(:user, email: "another@sharebox.com")
+          being_shared = FactoryGirl.create(:folder, user: another_user)
+          share = FactoryGirl.create(:shared, user: another_user,
+                                              folder: being_shared, shared_email: @user.email)
+          shared_file = FactoryGirl.create(:data_file, user: @user, folder: being_shared)
+          @controller.should_receive(:send_file).with(shared_file.uploaded_file.path,
+                                    { type: shared_file.uploaded_file_content_type,
+                                    x_sendfile: true }).and_return { @controller.render nothing: true }
+          get :get, id: shared_file
         end
       end
     end

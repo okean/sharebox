@@ -133,6 +133,15 @@ describe HomeController do
                                                 href: browse_path(@subfolder))
         end
         
+        it "should display someone else's shared folder" do
+          another_user = FactoryGirl.create(:user, email: "another@sharebox.com")
+          being_shared = FactoryGirl.create(:folder, user: another_user)
+          shared = FactoryGirl.create(:shared, user: another_user,
+                                                folder: being_shared, shared_email: @user.email)
+          get :browse, folder_id: being_shared
+          response.should be_success
+        end
+        
         it "should display folder's files" do
           @file = FactoryGirl.create(:data_file, user: @user, folder_id: @folder.id)
           get :browse, folder_id: @folder

@@ -38,6 +38,48 @@ describe User do
     @user.should respond_to(:shared_folders)
   end
   
+  it "should have a shared_folders_by_others attribute" do
+    @user.should respond_to(:shared_folders_by_others)
+  end
+  
+  it "should have a has_share_access? method" do
+    @user.should respond_to(:has_share_access?)
+  end
+  
+  describe "has_share_access?" do
+    
+    before(:each) do
+      @folder = FactoryGirl.create(:folder, user: @user)
+    end
+    
+    it "should return true for a user's folders" do
+      @user.has_share_access?(@folder).should be_true
+    end
+
+    it "should return true for a user's being shared folders" do
+      another_user = FactoryGirl.create(:user, email: "another@sharebox.com")
+      being_shared = FactoryGirl.create(:folder, user: another_user)
+      shared = FactoryGirl.create(:shared, user: another_user,
+                                            folder: being_shared, shared_email: @user.email)
+      @user.has_share_access?(being_shared).should be_true
+    end
+    
+    it "should return true for a nested folder in a being shared one" do
+      another_user = FactoryGirl.create(:user, email: "another@sharebox.com")
+      being_shared = FactoryGirl.create(:folder, user: another_user)
+      shared = FactoryGirl.create(:shared, user: another_user,
+                                            folder: being_shared, shared_email: @user.email)
+      nested = FactoryGirl.create(:folder, user: @user, parent_id: being_shared.id)
+      @user.has_share_access?(nested).should be_true
+    end
+    
+    it "should return false for an somebody else's folder" do
+      another_user = FactoryGirl.create(:user, email: "another@sharebox.com")
+      not_being_shared = FactoryGirl.create(:folder, user: another_user)
+      @user.has_share_access?(not_being_shared).should be_false
+    end
+  end
+  
   describe "DataFiles associations" do
     
     before(:each) do

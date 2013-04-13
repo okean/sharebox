@@ -14,8 +14,20 @@ class User < ActiveRecord::Base
   has_many :shared_folders, dependent: :destroy  
   has_many :being_shared_folders, class_name: "SharedFolder",
                                   foreign_key: "shared_user_id", dependent: :destroy
+  has_many :shared_folders_by_others, through: :being_shared_folders, source: :folder
   
   after_create :check_and_assign_shared_folders
+  
+  def has_share_access?(folder)
+    if !folder.nil?
+      return true if self.folders.include?(folder)
+      return true if self.shared_folders_by_others.include?(folder)
+      folder.ancestors.each do |ancestor_folder|
+        return true if self.shared_folders_by_others.include?(ancestor_folder)
+      end
+    end
+    return false
+  end
   
   private
   

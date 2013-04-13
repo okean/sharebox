@@ -3,16 +3,19 @@
   <p>File sharing web application you can't ignore.</p>  
 <% else %>
   <div id="menu">
-    <ul id="top_menu">
-      <li><%= link_to "Upload", new_data_file_path %></li>
-      <% if @current_folder %>
-        <li><%= link_to "New Folder", new_sub_folder_path(@current_folder) %></li>
-        <li><%= link_to "New File", new_sub_file_path(@current_folder) %></li>
-      <% else %>
-        <li><%= link_to "New Folder", new_folder_path %></li>
-        <li><%= link_to "New File", new_data_file_path %></li>
-      <% end %>
-    </ul>
+    <% unless @is_this_folder_being_shared %> 
+      <ul id="top_menu">
+        <% if @current_folder %>
+          <li><%= link_to "New Folder", new_sub_folder_path(@current_folder) %></li>
+          <li><%= link_to "Upload", new_sub_file_path(@current_folder) %></li>
+        <% else %>
+          <li><%= link_to "New Folder", new_folder_path %></li>
+          <li><%= link_to "Upload", new_data_file_path %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <h3>This folder is being shared to you by <%= @current_folder.user.name %></h3>  
+    <% end %>
   </div>
   <%= render 'shared/breadcrumbs' %>
   <div class="asset_list_header">  
@@ -21,22 +24,32 @@
     <div class="file_last_updated_header">Modified</div>  
   </div>
   <div class="asset_list">
+    <% @being_shared_folders.each do |folder| %>
+      <div class="asset_details <%= folder.shared? ? 'shared_folder' : 'folder' %>" id="folder_<%= folder.id %>">   
+        <div class="file_name"><%= link_to folder.name, browse_path(folder) %></div>  
+        <div class="file_size">-</div>  
+        <div class="file_last_updated">-</div>
+        <div class="actions"></div>
+      </div>
+    <% end %>
     <% @folders.each do |folder| %>
       <div class="asset_details <%= folder.shared? ? 'shared_folder' : 'folder' %>" id="folder_<%= folder.id %>">   
         <div class="file_name"><%= link_to folder.name, browse_path(folder) %></div>  
         <div class="file_size">-</div>  
         <div class="file_last_updated">-</div>
         <div class="actions">
-          <div class="share">
-            <%= link_to "Share", "#", folder_id: folder.id, folder_name: folder.name %>
-          </div>
-          <div class="rename">
-            <%= link_to "Rename", edit_folder_path(folder) %>
-          </div>
-          <div class="delete">
-            <%= link_to "Delete", folder, confirm: "Are you sure to delete the \
-                  folder and all of its contents?", method: :delete %>
-          </div>
+          <%  unless @is_this_folder_being_shared %>
+            <div class="share">
+              <%= link_to "Share", "#", folder_id: folder.id, folder_name: folder.name %>
+            </div>
+            <div class="rename">
+              <%= link_to "Rename", edit_folder_path(folder) %>
+            </div>
+            <div class="delete">
+              <%= link_to "Delete", folder, confirm: "Are you sure to delete the \
+                    folder and all of its contents?", method: :delete %>
+            </div>
+          <% end %>
         </div>
       </div> 
     <% end %>
@@ -50,7 +63,7 @@
             <%= link_to "Download", download_path(file) %>
           </div>
           <div class="delete">
-            <%= link_to "Delete", file, confirm: "Are you sure?", method: :delete %>
+            <%= link_to "Delete", file, confirm: "Are you sure?", method: :delete unless @is_this_folder_being_shared %>
           </div>
         </div>
       </div>
